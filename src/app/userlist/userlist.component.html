@@ -1,0 +1,22 @@
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>user_id</th>
+                <th>access_token</th>
+                <th>user_name</th>
+                <th>gender</th>
+                <th>created_on</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of userListData">
+                <td>{{item.user_id}}</td>
+                <td>{{item.access_token}}</td>
+                <td>{{item.user_name}}</td>
+                <td>{{item.gender}}</td>
+                <td>{{item.created_on}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
