@@ -1,0 +1,217 @@
+<div class="row">
+    <div class="col-md-7">
+        <div class="row">
+            <div class="create-post-area">
+                <div class="clearfix">
+                    <textarea class="form-control no-border" [(ngModel)]="postCaption" ngDefaultControl placeholder="Type something..." autofocus="autofocus"></textarea>
+                    <input type="hidden" [(ngModel)] = "post_hid_img" ngDefaultControl>
+                    <div class="post-gallery-preview" *ngIf="image_preview_show">
+                        <img [src]="img_preivew" class="img-responsive">
+                        <div class="cross-icon" (click)="closeCreatePostImage()">X</div>
+                    </div>
+                    <div class="box-footer clearfix">
+                        <button class="btn btn-info pull-right btn-sm" (click)="createPost()">Post</button>
+                        <ul class="nav nav-pills nav-sm">
+                            <li class="nav-item">
+                                <a class="nav-link" href="javascript:void(0)">
+                                    <input type="file" class="input-file-wrap" (change)="onChangePostImage($event)">
+                                    <i class="fa fa-camera text-muted"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item"><a class="nav-link" href=""><i class="fa fa-video-camera text-muted"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="create-post-successfull-wrap" *ngIf="createPostDiv">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="clearfix">
+                            <div class="col-md-2">
+                                <i class="fa fa-check" aria-hidden="true"></i>
+                            </div>
+                            <div class="col-md-10">
+                                <h4>Post Created Successfully.</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="no-post-found" *ngIf="noPostFound">
+                <div class="card">
+                    <div class="card-body">
+                        <p class="text-center">No Post</p>
+                    </div>
+                </div>
+            </div>
+            <div class="" *ngFor="let list of postArray; let in = index">
+                <div class="card post-content-wrap">
+                    <div class="card-body post-content">
+                        <div class="post-posted-by">
+                            <div class="clearfix">
+                                <div class="pull-left"> 
+                                    <div class="clearfix">
+                                        <img class="img-responsive img-circle" [src]="list.user_details.user_thumbnail" width="40px" height="40px;">
+                                        <div class="post-posted-by-name">
+                                            <h3>{{list.user_details.user_name}}</h3>
+                                            <p>{{(list.post_details.created_on | amFromUnix) | amTimeAgo}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pull-right">
+                                    <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="list.post_details.post_image != ''" class="post-wrap-background" [ngStyle]="{ 'background-image': 'url(' + list.post_details.post_image + ')'}"></div>
+                        <p *ngIf="list.post_details.post_caption != ''" class="post-caption">{{list.post_details.post_caption}}</p>
+                        <div class="post-caption-wrap">
+                            <div class="post-caption-icon-count">
+                                <div class="clearfix">
+                                    <div class="pull-left post-like-count">
+                                        <a href="javascript:void(0)">
+                                            <i class="fa fa-gratipay" aria-hidden="true"></i>
+                                            <span *ngIf="list.post_details.is_liked_by_me == 0">{{list.post_details.post_like_count}} Likes</span>
+                                            <span *ngIf="list.post_details.is_liked_by_me == 1">
+                                                <span *ngIf="list.post_details.post_like_count == 0">You likes this</span>
+                                                <span *ngIf="list.post_details.post_like_count > 0">You and {{list.post_details.post_like_count}} peoples like this</span>
+                                            </span>
+                                        </a>
+                                    </div>
+                                    <div class="pull-right post-comment-count">
+                                        <a href="javascript:void(0)"><span>{{list.post_details.post_comment_count}} Comments</span></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="post-caption-icon">
+                                <span class="icon-place">
+                                    <a href="javascript:void(0)" (click)="setLikePost($event,list.post_details, list.user_access_token)">
+                                        <span *ngIf="list.post_details.is_liked_by_me == 0">
+                                            <i class="fa fa-heart-o" aria-hidden="true"></i>
+                                            <span>Like</span>
+                                        </span>
+                                        <span *ngIf="list.post_details.is_liked_by_me == 1">
+                                            <i class="fa fa-heart" aria-hidden="true"></i>
+                                            <span>Liked</span>
+                                        </span>
+                                    </a>
+                                </span>
+                                <span class="icon-place">
+                                    <a href="#">
+                                        <i class="fa fa-comment-o" aria-hidden="true"></i>
+                                        <span>Comment</span>
+                                    </a>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="post-comment-area">
+                            <div class="clearfix">
+                                <div class="col-md-2">
+                                    <img class="img-responsive img-circle" [src]="list.user_details.user_thumbnail" width="40px" height="40px;">
+                                </div>
+                                <div class="col-md-10">
+                                    <!-- <form> -->
+                                        <textarea class="form-control post-comment" ngDefaultControl (keydown.enter)="createComment($event, list.post_details, list.user_access_token);false"></textarea>
+                                    <!-- </form> -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="post-comment-wrap" *ngFor="let commentlist of list.post_details.post_comment">
+                            <div class="post-comment clearfix">
+                                <div class="col-md-2">
+                                    <img class="img-responsive img-circle" [src]="commentlist.posted_details.user_thumbnail" width="40px" height="40px;">
+                                </div>
+                                <div class="col-md-10">
+                                    <h3>{{commentlist.posted_details.user_name}}</h3>
+                                    <p>{{commentlist.comment_text}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-5"> 
+        <div class="stories-wrap">
+            <div class="card">
+                <div class="card-body">
+                    <h3>Stories</h3>
+                    <div class="stories-list-wrap">
+                        <ul class="clearfix">
+                            <li>
+                                <a>
+                                    <img class="img-circle" src="http://lorempixel.com/400/200" width="40px" height="40px;" alt="">
+                                </a>
+                            </li>
+                            <li>
+                                <a>
+                                    <img class="img-circle" src="http://lorempixel.com/400/200" width="40px" height="40px;" alt="">
+                                </a>
+                            </li>
+                            <li>
+                                <a>
+                                    <img class="img-circle" src="http://lorempixel.com/400/200" width="40px" height="40px;" alt="">
+                                </a>
+                            </li>
+                            <li>
+                                <a>
+                                    <img class="img-circle" src="http://lorempixel.com/400/200" width="40px" height="40px;" alt="">
+                                </a>
+                            </li>
+                            <li>
+                                <a>
+                                    <img class="img-circle" src="http://lorempixel.com/400/200" width="40px" height="40px;" alt="">
+                                </a>
+                            </li>
+                            <li>
+                                <a>
+                                    <img class="img-circle" src="http://lorempixel.com/400/200" width="40px" height="40px;" alt="">
+                                </a>
+                            </li>
+                            <li>
+                                <a>
+                                    <img class="img-circle" src="http://lorempixel.com/400/200" width="40px" height="40px;" alt="">
+                                </a>
+                            </li>
+                            <li>
+                                <a>
+                                    <img class="img-circle" src="http://lorempixel.com/400/200" width="40px" height="40px;" alt="">
+                                </a>
+                            </li>
+                            <li>
+                                <a>
+                                    <img class="img-circle" src="http://lorempixel.com/400/200" width="40px" height="40px;" alt="">
+                                </a>
+                            </li>
+                            <li>
+                                <a>
+                                    <img class="img-circle" src="http://lorempixel.com/400/200" width="40px" height="40px;" alt="">
+                                </a>
+                            </li>
+                            <li>
+                                <a>
+                                    <img class="img-circle" src="http://lorempixel.com/400/200" width="40px" height="40px;" alt="">
+                                </a>
+                            </li>
+                            <li>
+                                <a>
+                                    <img class="img-circle" src="http://lorempixel.com/400/200" width="40px" height="40px;" alt="">
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ad-wrap" style="margin-top: 15px;">
+            <div class="card" style="height: 200px;">
+                <div class="card-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

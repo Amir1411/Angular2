@@ -1,0 +1,61 @@
+<div class="container">
+    <div class="card panel-body">
+        <div class="row">
+            <div class="col-md-7">
+                <div class="jumbotron">
+                    <div class="row">
+                        <div class="col-md-9">
+                            <h2>Feel Free to connect</h2>
+                            <div class="errorContainerWrap" *ngIf="showSignupError">
+                                <div class="alert alert-danger alert-dismissable fade in">
+                                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                                    <strong>Error! </strong>
+                                    <span class="errorContainer">{{signup_error_msg}}</span>
+                                </div>
+                            </div>
+                            <div class="input-field form-group">
+                                <label for="name">Full Name</label>
+                                <input id="name" type="name" class="validate form-control" [(ngModel)]="signupname">
+                                <span class="error" *ngIf="showSignupNameError">*{{signup_name_msg}}</span>
+                            </div>
+                            <div class="input-field form-group">
+                                <label for="email">Email</label>
+                                <input id="email" type="email" class="validate form-control" [(ngModel)]="signupemail">
+                                <span class="error" *ngIf="showSignupEmailError">*{{signup_email_msg}}</span>
+                            </div>
+                            <div class="input-field form-group">
+                                <label for="password">Password</label>
+                                <input  id="password" type="password" class="validate form-control" [(ngModel)]="signuppassword">
+                                <span class="error" *ngIf="showSignupPasswordError">*{{signup_password_msg}}</span>
+                            </div>
+                            <button (click)="signup()" class="btn btn-info waves-effect waves-light" type="submit" name="action">Create</button>
+                        </div>
+                    </div>   
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="jumbotron">
+                    <h2>Signin</h2>
+                    <div class="errorContainerWrap" *ngIf="showLoginError">
+                        <div class="alert alert-danger alert-dismissable fade in">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                            <strong>Error! </strong>
+                            <span class="errorContainer">{{login_error_msg}}</span>
+                        </div>
+                    </div>
+                    <div class="input-field form-group">
+                        <label for="email">Email</label>
+                        <input id="email" type="email" class="validate form-control" [(ngModel)]="email">
+                        <span class="error" *ngIf="showEmailError">*{{login_email_msg}}</span>
+                    </div>
+                    <div class="input-field form-group">
+                        <label for="password">Password</label>
+                        <input  id="password" type="password" class="validate form-control" [(ngModel)]="password">
+                        <span class="error" *ngIf="showPasswordError">*{{login_password_msg}}</span>
+                    </div>
+                    <button (click)="login()" class="btn btn-success waves-effect waves-light" type="submit" name="action">Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
